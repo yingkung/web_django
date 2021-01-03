@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+import datetime
 
 # Create your models here.
 # 创建Question表
@@ -6,8 +8,12 @@ class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
 
+    def was_published_recently(self):
+        return self.pub_date >= timezone.now()
+
     def __str__(self):
         return self.question_text
+datetime.timedelta(days=1)
 
 # 创建Choice表
 class Choice(models.Model):
@@ -17,3 +23,4 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
+

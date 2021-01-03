@@ -56,7 +56,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        'APP_DIRS': True,
+        'APP_DIRS': True,  # 这里设置成true，django就可以找到每个apps中的templates
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
