@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404
 from .models import Question
 from django.template import loader
@@ -16,17 +16,19 @@ def index(request):
 
 def detail(request, question_id):
     # 如果题号不存在，则显示404
-    try:
-        question = Question.objects.get(pk=question_id)
-    except Question.DoesNotExist:
-        raise Http404('Question does not exist.')
+    # try:
+    #     question = Question.objects.get(pk=question_id)
+    # except Question.DoesNotExist:
+    #     raise Http404('Question does not exist.')
+    # 上述代码可以直接使用get_object_or_404()代替
+    question = get_object_or_404(Question, pk=question_id)
     # return HttpResponse('You are looking at question %s.'%question_id)
-    return render(request, 'polls/detail.html', {'question':question})
+    return render(request, 'polls/detail.html', {'question': question})
 
 
 def results(request, question_id):
     response = 'You are looking at the resutls of question %s.'
-    return HttpResponse(response% question_id)
+    return HttpResponse(response % question_id)
 
 
 def vote(request, question_id):
