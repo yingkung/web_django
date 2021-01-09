@@ -9,7 +9,11 @@
         <ul>
             {% for question in last_question_list %}
                 <li>
-                    <a href="/polls/{{qustion_id}}/">{{question.question_text}}</a>
+                    <!--<a href="/polls/{{qustion_id}}/">{{question.question_text}}</a>-->
+                    <a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a>
+                    <!--点击question,跳转到detail页面-->
+                    <!--这个url编码是比上面更好的方式，通过查找polls/urls.py中的名为detail的url，来找到对应需要显示的url-->
+                    <!--注意detail要加引号-->
                 </li>
             {% endfor %}
         </ul>
