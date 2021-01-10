@@ -3,36 +3,55 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from .models import Question, Choice
 from django.template import loader
 from django.urls import reverse
+from django.views import generic
 
-def index(request):
-    last_question_list = Question.objects.order_by('-pub_date')[0:5]
-    # template = loader.get_template('polls/index.html')  # 载入index.html文件
-    context = {
-        'last_question_list': last_question_list,
-    }
-    # output = ','.join([q.question_text for q in last_question_list])
-    # return HttpResponse(output)
-    # return HttpResponse(template.render(context, request))  # 更简洁的方式如下,不需要loader template
-    return render(request, 'polls/index.html', context)
+# def index(request):
+#     last_question_list = Question.objects.order_by('-pub_date')[0:5]
+#     # template = loader.get_template('polls/index.html')  # 载入index.html文件
+#     context = {
+#         'last_question_list': last_question_list,
+#     }
+#     # output = ','.join([q.question_text for q in last_question_list])
+#     # return HttpResponse(output)
+#     # return HttpResponse(template.render(context, request))  # 更简洁的方式如下,不需要loader template
+#     return render(request, 'polls/index.html', context)
+#
+# def detail(request, question_id):
+#     # 如果题号不存在，则显示404
+#     # try:
+#     #     question = Question.objects.get(pk=question_id)
+#     # except Question.DoesNotExist:
+#     #     raise Http404('Question does not exist.')
+#     # 上述代码可以直接使用get_object_or_404()代替
+#     question = get_object_or_404(Question, pk=question_id)
+#     # return HttpResponse('You are looking at question %s.'%question_id)
+#     return render(request, 'polls/detail.html', {'question': question})
+#
+#
+# def results(request, question_id):
+#     # response = 'You are looking at the resutls of question %s.'
+#     # return HttpResponse(response % question_id)
+#     question = get_object_or_404(Question, pk=question_id)
+#     return render(request, 'polls/results.html', {'question': question})
 
-def detail(request, question_id):
-    # 如果题号不存在，则显示404
-    # try:
-    #     question = Question.objects.get(pk=question_id)
-    # except Question.DoesNotExist:
-    #     raise Http404('Question does not exist.')
-    # 上述代码可以直接使用get_object_or_404()代替
-    question = get_object_or_404(Question, pk=question_id)
-    # return HttpResponse('You are looking at question %s.'%question_id)
-    return render(request, 'polls/detail.html', {'question': question})
 
+# 将上面的代码改成通用文档视图
+class IndexView(generic.ListView):
+    # ListView 对应于显示一个对象列表
+    template_name = 'polls/index.html'
+    context_object_name = 'last_question_list'
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
 
-def results(request, question_id):
-    # response = 'You are looking at the resutls of question %s.'
-    # return HttpResponse(response % question_id)
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'polls/results.html', {'question': question})
+class DetailView(generic.DetailView):
+    # DetailView 对应于显示一个特定类型对象的详细信息
+    model = Question
+    template_name = 'polls/detail.html'
 
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = 'polls/results.html'
 
 def vote(request, question_id):
     # return HttpResponse('You are voting at question %s.' % question_id)
