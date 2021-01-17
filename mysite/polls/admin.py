@@ -10,7 +10,7 @@ from django.contrib import admin
 #     """创建模型后台类"""
 #     fields = ['pub_date', 'question_text']
 
-class ChoiceInline(admin.StackedInline):
+class ChoiceInline(admin.TabularInline):
     model = Choice
     extra = 3
 
@@ -20,6 +20,9 @@ class QuestionAdmin(admin.ModelAdmin):
         (None, {'fields': ['question_text']}),
         ('Date information', {'fields':['pub_date']}),
     ]
+    list_display = ('question_text', 'pub_date', 'was_published_recently')  # 显示哪些字段
+    list_filter = ['pub_date']  # 按照这个字段排序
+    search_fields = ['question_text']  # 在admin页面上添加搜索框
     inlines = [ChoiceInline]  # 将choice的添加，与question的添加合并到一个页面中
 
 
